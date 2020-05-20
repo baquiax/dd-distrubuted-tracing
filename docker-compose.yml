@@ -1,0 +1,22 @@
+version: "3"
+
+services: 
+  datadog:
+    image: datadog/agent
+    environment: 
+      - DD_APM_ENABLED=true
+    env_file: 
+      - .env
+    ports: 
+      - 8126:8126
+    volumes:
+      - /var/run/docker.sock:/var/run/docker.sock
+      - /proc/:/host/proc/:ro
+      - /sys/fs/cgroup:/host/sys/fs/cgroup:ro
+  apps:
+    build: 
+      dockerfile: Dockerfile
+      context: .
+    environment: 
+      - DD_AGENT_HOST=datadog
+      - DD_TRACE_AGENT_PORT=8126
